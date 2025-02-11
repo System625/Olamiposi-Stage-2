@@ -1,36 +1,119 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Techember Fest '25 Ticket Generator
+
+A modern, responsive web application for generating and managing event tickets. Built with Next.js, TypeScript, and Tailwind CSS.
+
+![Ticket Generator Preview](public/images/preview.png)
+
+## Features
+
+- 🎫 Multiple ticket types (Regular, VIP, VVIP)
+- 📱 Fully responsive design
+- 🖼️ Profile photo upload with Cloudinary integration
+- 💾 Persistent form data using localStorage
+- ⌨️ Full keyboard navigation support
+- 👓 Screen reader friendly
+- 🎨 Modern UI with gradient effects
+- 📥 Downloadable tickets as PNG
+
+## Tech Stack
+
+- [Next.js](https://nextjs.org/) - React framework
+- [TypeScript](https://www.typescriptlang.org/) - Type safety
+- [Tailwind CSS](https://tailwindcss.com/) - Styling
+- [Zod](https://github.com/colinhacks/zod) - Form validation
+- [React Hook Form](https://react-hook-form.com/) - Form handling
+- [html-to-image](https://github.com/bubkoo/html-to-image) - Ticket image generation
+- [Cloudinary](https://cloudinary.com/) - Image upload and hosting
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+ 
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/ticket-gen.git
+cd ticket-gen
+```
+
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+```
+
+3. Create a `.env.local` file in the root directory and add your Cloudinary credentials:
+```env
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloud_name
+NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=your_upload_preset
+```
+
+4. Start the development server:
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+ticket-gen/
+├── components/           # React components
+│   ├── ui/              # Reusable UI components
+│   ├── TicketForm.tsx   # Ticket form component
+│   ├── TicketReady.tsx  # Generated ticket component
+│   └── ...
+├── lib/                 # Utility functions
+├── public/              # Static assets
+└── styles/             # Global styles
+```
 
-## Learn More
+## Key Features Explained
 
-To learn more about Next.js, take a look at the following resources:
+### Ticket Types
+- **Regular Access**: Free tier with basic access
+- **VIP Access**: Premium tier with additional benefits
+- **VVIP Access**: Top-tier exclusive access
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Form Validation
+- Required field validation
+- Email format validation
+- Image upload validation
+- Real-time error feedback
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Accessibility Features
+- ARIA labels and roles
+- Keyboard navigation
+- Screen reader support
+- Focus management
 
-## Deploy on Vercel
+### State Management
+- Form data persistence
+- Ticket inventory tracking
+- Upload state handling
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Contributing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- Design inspiration from modern ticket booking platforms
+- Icons from [Iconify](https://iconify.design/)
+- UI components from [shadcn/ui](https://ui.shadcn.com/)
