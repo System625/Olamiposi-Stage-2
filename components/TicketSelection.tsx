@@ -135,8 +135,8 @@ const TicketSelectionContent = dynamic(() => Promise.resolve(({
 
 export default function TicketSelection({ onNext, selectedTicket: initialSelectedTicket, numberOfTickets: initialNumberOfTickets }: TicketSelectionProps) {
   const [mounted, setMounted] = useState(false)
-  const [selectedTicket, setSelectedTicket] = useState<string | null>(initialSelectedTicket)
-  const [numberOfTickets, setNumberOfTickets] = useState(initialNumberOfTickets)
+  const [selectedTicket, setSelectedTicket] = useState<string | null>(null)
+  const [numberOfTickets, setNumberOfTickets] = useState('1')
   const [ticketTypes, setTicketTypes] = useState<TicketType[]>(initialTicketTypes)
   
   useEffect(() => {
@@ -145,12 +145,15 @@ export default function TicketSelection({ onNext, selectedTicket: initialSelecte
 
   useEffect(() => {
     if (mounted) {
+      setSelectedTicket(initialSelectedTicket)
+      setNumberOfTickets(initialNumberOfTickets)
+      
       const savedInventory = localStorage.getItem('ticketInventory')
       if (savedInventory) {
         setTicketTypes(JSON.parse(savedInventory))
       }
     }
-  }, [mounted])
+  }, [mounted, initialSelectedTicket, initialNumberOfTickets])
   
   useEffect(() => {
     if (mounted) {
