@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import TicketSelection from './TicketSelection'
 import TicketForm from './TicketForm'
 import TicketReady from './TicketReady'
@@ -15,11 +15,41 @@ interface TicketData {
 }
 
 export default function TicketSteps() {
+  const [mounted, setMounted] = useState(false)
   const [currentStep, setCurrentStep] = useState(1)
   const [ticketData, setTicketData] = useState<TicketData>({
     type: null,
     numberOfTickets: '1'
   })
+
+  // Handle mounting state
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Load saved state on component mount
+  useEffect(() => {
+    if (mounted) {
+      const savedStep = localStorage.getItem('currentStep')
+      const savedTicketData = localStorage.getItem('ticketData')
+      
+      if (savedStep) {
+        setCurrentStep(Number(savedStep))
+      }
+      
+      if (savedTicketData) {
+        setTicketData(JSON.parse(savedTicketData))
+      }
+    }
+  }, [mounted])
+
+  // Save state whenever it changes
+  useEffect(() => {
+    if (mounted) {
+      localStorage.setItem('currentStep', currentStep.toString())
+      localStorage.setItem('ticketData', JSON.stringify(ticketData))
+    }
+  }, [currentStep, ticketData, mounted])
 
   const handleTicketSelection = (type: string, numberOfTickets: string) => {
     setTicketData(prev => ({
@@ -43,11 +73,29 @@ export default function TicketSteps() {
   }
 
   const handleBookAnother = () => {
+    if (mounted) {
+      // Clear localStorage when booking another ticket
+      localStorage.removeItem('currentStep')
+      localStorage.removeItem('ticketData')
+      localStorage.removeItem('ticketForm')
+    }
+    
     setCurrentStep(1)
     setTicketData({
       type: null,
       numberOfTickets: '1'
     })
+  }
+
+  // Prevent hydration issues by not rendering until mounted
+  if (!mounted) {
+    return (
+      <div className="max-w-2xl mx-auto">
+        <div className="p-8 bg-transparent border border-[#197686] rounded-3xl">
+          <div className="animate-pulse bg-[#08252B] h-[500px] rounded-3xl"></div>
+        </div>
+      </div>
+    )
   }
 
   return (
