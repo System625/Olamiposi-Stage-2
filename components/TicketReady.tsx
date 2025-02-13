@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button'
 import { toPng } from 'html-to-image'
 import { saveAs } from 'file-saver'
 import { toast } from 'sonner'
-import styles from './TicketReady.module.css'
 import { Card } from '@/components/ui/card'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
@@ -24,7 +23,6 @@ interface TicketReadyProps {
   onBookAnother: () => void
 }
 
-// Create a client-only ticket content component
 const TicketContent = dynamic(() => Promise.resolve(({ ticketData }: { ticketData: TicketData }) => {
   const [mounted, setMounted] = useState(false)
   
@@ -33,89 +31,99 @@ const TicketContent = dynamic(() => Promise.resolve(({ ticketData }: { ticketDat
   }, [])
 
   return (
-    <div className={`${styles.ticketContent} bg-gradient-to-br from-[#07373F] via-[#08252B] to-[#052228]`}>
-      <div className="text-center space-y-3">
-        <h3 className="md:text-4xl text-3xl text-white font-road-rage">Techember Fest &quot;25</h3>
-        <div className="space-y-1 text-[10px] md:text-sm text-gray-200 font-roboto">
-          <div className="flex items-center justify-center gap-2">
-            <span role="img" aria-label="location">📍</span>
-            <span>04 Rumens road, Ikoyi, Lagos</span>
+    <div className="relative max-w-sm mx-auto px-4">
+      <Image
+        src="/bg.svg"
+        alt="Ticket background"
+        fill
+        className="absolute inset-0 object-contain z-0"
+        priority
+      />
+      <div className="relative z-10 pt-4 px-6 max-w-xs mx-auto pb-10">
+        <div className="border border-[#24A0B5] rounded-2xl p-2">
+          <div className="text-center space-y-2">
+            <h3 className="text-2xl md:text-4xl text-white font-road-rage">Techember Fest &quot;25</h3>
+            <div className="space-y-0.5 text-[8px] md:text-sm text-gray-200 font-roboto">
+              <div className="flex items-center justify-center gap-1">
+                <span role="img" aria-label="location">📍</span>
+                <span>04 Rumens road, Ikoyi, Lagos</span>
+              </div>
+              <div className="flex items-center justify-center gap-1">
+                <span role="img" aria-label="calendar">📅</span>
+                <span>March 15, 2025 | 7:00 PM</span>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center justify-center gap-2">
-            <span role="img" aria-label="calendar">📅</span>
-            <span>March 15, 2025 | 7:00 PM</span>
-          </div>
+
+          {mounted && (
+            <>
+              <div className="flex justify-center mt-4">
+                {ticketData.profilePhoto ? (
+                  <div className="relative w-24 h-24 md:w-36 md:h-36 border-4 border-[#24A0B5] rounded-lg overflow-hidden">
+                    <Image
+                      src={ticketData.profilePhoto}
+                      alt="Attendee's profile"
+                      className="object-cover"
+                      fill
+                      sizes="(max-width: 640px) 96px, (max-width: 768px) 128px, 144px"
+                      priority
+                    />
+                  </div>
+                ) : (
+                  <div className="w-24 h-24 md:w-36 md:h-36 rounded-lg bg-[#07373F] flex items-center justify-center border-4 border-[#24A0B5]">
+                    <span className="text-white/50 text-xs">No photo</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="grid grid-cols-2 text-sm font-roboto mt-2 bg-[#07373F]/50 rounded-lg">
+                <div className="p-1.5 border-b border-r border-[#24A0B5]/30">
+                  <div className="text-gray-400 text-[8px] mb-0.5">Name</div>
+                  <div className="text-white text-[10px] line-clamp-1">{ticketData.fullName}</div>
+                </div>
+                <div className="p-1.5 border-b border-l border-[#24A0B5]/30">
+                  <div className="text-gray-400 text-[8px] mb-0.5">Email</div>
+                  <div className="text-white text-[10px] line-clamp-3">{ticketData.email}</div>
+                </div>
+                <div className="p-1.5 border-b border-r border-[#24A0B5]/30">
+                  <div className="text-gray-400 text-[8px] mb-0.5">Ticket Type</div>
+                  <div className="text-white text-[10px]">{ticketData.type || 'VIP'}</div>
+                </div>
+                <div className="p-1.5 border-b border-l border-[#24A0B5]/30">
+                  <div className="text-gray-400 text-[8px] mb-0.5">Ticket for</div>
+                  <div className="text-white text-[10px]">{ticketData.numberOfTickets || '1'}</div>
+                </div>
+                <div className="col-span-2 p-1.5">
+                  <div className="text-gray-400 text-[8px] mb-1 ">Special request?</div>
+                  <div className="text-white text-[10px] bg-[#07373F] p-2 rounded-lg min-h-[60px] leading-relaxed whitespace-pre-wrap break-words">
+                    {ticketData.message || 'Nil ? Or the users sad story they write in there gets this whole space, Max of three rows'}
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </div>
+
+        {mounted && (
+          <div className="mt-8 text-center">
+            <div className="relative h-8 w-24 mx-auto mb-1">
+              <Image
+                src="/images/barcode.png"
+                alt="Ticket barcode"
+                fill
+                sizes="(max-width: 640px) 96px, 128px"
+                className="object-contain"
+                priority
+              />
+            </div>
+            <div className="text-[10px] text-gray-400 tracking-wider">234567 891026</div>
+          </div>
+        )}
       </div>
-
-      {mounted && (
-        <>
-          <div className="flex justify-center">
-            {ticketData.profilePhoto ? (
-              <div className="relative w-36 h-36 border-4 border-[#24A0B5] rounded-lg">
-                <Image
-                  src={ticketData.profilePhoto}
-                  alt="Attendee's profile"
-                  className="rounded-lg object-cover"
-                  fill
-                  sizes="(max-width: 768px) 144px, 144px"
-                  priority
-                />
-                <div className="absolute inset-0 rounded-lg ring-2 ring-[#197686]/30 ring-offset-2 ring-offset-[#0E464F]" />
-              </div>
-            ) : (
-              <div className="w-36 h-36 rounded-lg bg-[#052228] flex items-center justify-center ring-2 ring-[#197686]/30 ring-offset-2 ring-offset-[#0E464F]">
-                <span className="text-white/50">No photo</span>
-              </div>
-            )}
-          </div>
-
-          <div className="grid grid-cols-2 text-sm font-roboto border border-[#24A0B5] rounded-lg p-4">
-            <div className="border-b border-r border-[#24A0B5] p-2">
-              <div className="text-gray-400 text-[10px] mb-1">Name</div>
-              <div className="text-white text-xs line-clamp-1">{ticketData.fullName}</div>
-            </div>
-            <div className="border-b border-l border-[#24A0B5] p-2">
-              <div className="text-gray-400 text-[10px] mb-1">Email</div>
-              <div className="text-white text-xs line-clamp-3">{ticketData.email}</div>
-            </div>
-            <div className="border-b border-r border-[#24A0B5] p-2">
-              <div className="text-gray-400 text-[10px] mb-1">Ticket Type</div>
-              <div className="text-white text-xs">{ticketData.type || 'VIP'}</div>
-            </div>
-            <div className="border-b border-l border-[#24A0B5] p-2">
-              <div className="text-gray-400 text-[10px] mb-1">Ticket for</div>
-              <div className="text-white text-xs">{ticketData.numberOfTickets || '1'}</div>
-            </div>
-            <div className="col-span-2 mt-2 p-2">
-              <div className="text-gray-400 text-[10px] mb-2">Special request</div>
-              <div className="text-white text-xs bg-[#052228] p-4 rounded-lg min-h-[80px] leading-relaxed whitespace-pre-wrap break-words">
-                {ticketData.message || 'No special requests'}
-              </div>
-            </div>
-          </div>
-        </>
-      )}
     </div>
   )
 }), { ssr: false })
 
-// Create a client-only barcode component
-const BarcodeSection = dynamic(() => Promise.resolve(() => (
-  <div className={`${styles.barcodeSection} bg-gradient-to-br from-[#07373F] via-[#08252B] to-[#052228]`}>
-    <div className="relative h-12 w-32 mx-auto mb-2">
-      <Image
-        src="/images/barcode.png"
-        alt="Ticket barcode"
-        fill
-        sizes="128px"
-        className="object-contain"
-        priority
-      />
-    </div>
-    <div className="text-xs text-gray-400 tracking-wider">234567 891026</div>
-  </div>
-)), { ssr: false })
 
 export default function TicketReady({ ticketData, onBookAnother }: TicketReadyProps) {
   const [mounted, setMounted] = useState(false)
@@ -168,7 +176,6 @@ export default function TicketReady({ ticketData, onBookAnother }: TicketReadyPr
     }
   }
 
-  // Prevent hydration issues by not rendering until mounted
   if (!mounted) {
     return (
       <div className="max-w-2xl mx-auto">
@@ -206,19 +213,17 @@ export default function TicketReady({ ticketData, onBookAnother }: TicketReadyPr
           <div className="text-gray-200 font-roboto">Check your email for a copy or you can <span className="text-white">download</span></div>
         </div>
 
-        <div className="max-w-sm mx-auto mb-8 border border-[#24A0B5] rounded-3xl">
+        <div className="max-w-sm mx-auto mb-8">
           <div
-            ref={ticketRef}
-            className={`${styles.ticket} border border-[#24A0B5]`}
+            ref={ticketRef}          
             role="article"
             aria-label="Event ticket"
           >
-            <TicketContent ticketData={ticketData} />
-            <BarcodeSection />
+            <TicketContent ticketData={ticketData} />            
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+        <div className="flex flex-col gap-4 max-w-md mx-auto">
           <Button
             type="button"
             variant="outline"
