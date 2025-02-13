@@ -6,7 +6,6 @@ import { toPng } from 'html-to-image'
 import { saveAs } from 'file-saver'
 import { toast } from 'sonner'
 import { Card } from '@/components/ui/card'
-import dynamic from 'next/dynamic'
 import Image from 'next/image'
 
 interface TicketData {
@@ -23,13 +22,7 @@ interface TicketReadyProps {
   onBookAnother: () => void
 }
 
-const TicketContent = dynamic(() => Promise.resolve(({ ticketData }: { ticketData: TicketData }) => {
-  const [mounted, setMounted] = useState(false)
-  
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
+function TicketContent({ ticketData }: { ticketData: TicketData }) {
   return (
     <div className="relative max-w-sm mx-auto px-4">
       <Image
@@ -55,75 +48,68 @@ const TicketContent = dynamic(() => Promise.resolve(({ ticketData }: { ticketDat
             </div>
           </div>
 
-          {mounted && (
-            <>
-              <div className="flex justify-center mt-4">
-                {ticketData.profilePhoto ? (
-                  <div className="relative w-24 h-24 md:w-36 md:h-36 border-4 border-[#24A0B5] rounded-lg overflow-hidden">
-                    <Image
-                      src={ticketData.profilePhoto}
-                      alt="Attendee's profile"
-                      className="object-cover"
-                      fill
-                      sizes="(max-width: 640px) 96px, (max-width: 768px) 128px, 144px"
-                      priority
-                    />
-                  </div>
-                ) : (
-                  <div className="w-24 h-24 md:w-36 md:h-36 rounded-lg bg-[#07373F] flex items-center justify-center border-4 border-[#24A0B5]">
-                    <span className="text-white/50 text-xs">No photo</span>
-                  </div>
-                )}
+          <div className="flex justify-center mt-4">
+            {ticketData.profilePhoto ? (
+              <div className="relative w-24 h-24 md:w-36 md:h-36 border-4 border-[#24A0B5] rounded-lg overflow-hidden">
+                <Image
+                  src={ticketData.profilePhoto}
+                  alt="Attendee's profile"
+                  className="object-cover"
+                  fill
+                  sizes="(max-width: 640px) 96px, (max-width: 768px) 128px, 144px"
+                  priority
+                />
               </div>
+            ) : (
+              <div className="w-24 h-24 md:w-36 md:h-36 rounded-lg bg-[#07373F] flex items-center justify-center border-4 border-[#24A0B5]">
+                <span className="text-white/50 text-xs">No photo</span>
+              </div>
+            )}
+          </div>
 
-              <div className="grid grid-cols-2 text-sm font-roboto mt-2 bg-[#07373F]/50 rounded-lg">
-                <div className="p-1.5 border-b border-r border-[#24A0B5]/30">
-                  <div className="text-gray-400 text-[8px] mb-0.5">Name</div>
-                  <div className="text-white text-[10px] line-clamp-1">{ticketData.fullName}</div>
-                </div>
-                <div className="p-1.5 border-b border-l border-[#24A0B5]/30">
-                  <div className="text-gray-400 text-[8px] mb-0.5">Email</div>
-                  <div className="text-white text-[10px] line-clamp-3">{ticketData.email}</div>
-                </div>
-                <div className="p-1.5 border-b border-r border-[#24A0B5]/30">
-                  <div className="text-gray-400 text-[8px] mb-0.5">Ticket Type</div>
-                  <div className="text-white text-[10px]">{ticketData.type || 'VIP'}</div>
-                </div>
-                <div className="p-1.5 border-b border-l border-[#24A0B5]/30">
-                  <div className="text-gray-400 text-[8px] mb-0.5">Ticket for</div>
-                  <div className="text-white text-[10px]">{ticketData.numberOfTickets || '1'}</div>
-                </div>
-                <div className="col-span-2 p-1.5">
-                  <div className="text-gray-400 text-[8px] mb-1 ">Special request?</div>
-                  <div className="text-white text-[10px] bg-[#07373F] p-2 rounded-lg min-h-[60px] leading-relaxed whitespace-pre-wrap break-words">
-                    {ticketData.message || 'Nil ? Or the users sad story they write in there gets this whole space, Max of three rows'}
-                  </div>
-                </div>
+          <div className="grid grid-cols-2 text-sm font-roboto mt-2 bg-[#07373F]/50 rounded-lg">
+            <div className="p-1.5 border-b border-r border-[#24A0B5]/30">
+              <div className="text-gray-400 text-[8px] mb-0.5">Name</div>
+              <div className="text-white text-[10px] line-clamp-1">{ticketData.fullName}</div>
+            </div>
+            <div className="p-1.5 border-b border-l border-[#24A0B5]/30">
+              <div className="text-gray-400 text-[8px] mb-0.5">Email</div>
+              <div className="text-white text-[10px] line-clamp-3">{ticketData.email}</div>
+            </div>
+            <div className="p-1.5 border-b border-r border-[#24A0B5]/30">
+              <div className="text-gray-400 text-[8px] mb-0.5">Ticket Type</div>
+              <div className="text-white text-[10px]">{ticketData.type || 'VIP'}</div>
+            </div>
+            <div className="p-1.5 border-b border-l border-[#24A0B5]/30">
+              <div className="text-gray-400 text-[8px] mb-0.5">Ticket for</div>
+              <div className="text-white text-[10px]">{ticketData.numberOfTickets || '1'}</div>
+            </div>
+            <div className="col-span-2 p-1.5">
+              <div className="text-gray-400 text-[8px] mb-1">Special request?</div>
+              <div className="text-white text-[10px] bg-[#07373F] p-2 rounded-lg min-h-[60px] leading-relaxed whitespace-pre-wrap break-words">
+                {ticketData.message || 'Nil ? Or the users sad story they write in there gets this whole space, Max of three rows'}
               </div>
-            </>
-          )}
+            </div>
+          </div>
         </div>
 
-        {mounted && (
-          <div className="mt-8 text-center">
-            <div className="relative h-8 w-24 mx-auto mb-1">
-              <Image
-                src="/images/barcode.png"
-                alt="Ticket barcode"
-                fill
-                sizes="(max-width: 640px) 96px, 128px"
-                className="object-contain"
-                priority
-              />
-            </div>
-            <div className="text-[10px] text-gray-400 tracking-wider">234567 891026</div>
+        <div className="mt-8 text-center">
+          <div className="relative h-8 w-24 mx-auto mb-1">
+            <Image
+              src="/images/barcode.png"
+              alt="Ticket barcode"
+              fill
+              sizes="(max-width: 640px) 96px, 128px"
+              className="object-contain"
+              priority
+            />
           </div>
-        )}
+          <div className="text-[10px] text-gray-400 tracking-wider">234567 891026</div>
+        </div>
       </div>
     </div>
   )
-}), { ssr: false })
-
+}
 
 export default function TicketReady({ ticketData, onBookAnother }: TicketReadyProps) {
   const [mounted, setMounted] = useState(false)
@@ -144,22 +130,27 @@ export default function TicketReady({ ticketData, onBookAnother }: TicketReadyPr
       setIsDownloading(true)
       const dataUrl = await toPng(ticketRef.current, {
         quality: 1.0,
-        pixelRatio: 2,
-        width: ticketRef.current.offsetWidth,
+        pixelRatio: 3,
+        width: 320,
         height: ticketRef.current.offsetHeight,
         backgroundColor: '#0E464F',
         style: {
           transform: 'scale(1)',
-          transformOrigin: 'top left',
-          margin: '0',
+          transformOrigin: 'center center',
+          margin: '0 auto',
           padding: '0',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
         },
         filter: (node) => {          
-          const exclusionClasses = ['overflow-hidden', 'overflow-x-hidden', 'overflow-y-hidden']
+          const exclusionClasses: string[] = []
           return !exclusionClasses.some(className => 
             node.classList?.contains(className)
           )
-        }
+        },
+        skipAutoScale: true,
+        cacheBust: true,
       })
       
       const ticketType = ticketData.type?.replace(' ACCESS', '') || 'REGULAR'
