@@ -22,12 +22,10 @@ export default function TicketSteps() {
     numberOfTickets: '1'
   })
 
-  // Handle mounting state
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  // Separate effect for loading saved state after mounting
   useEffect(() => {
     if (mounted) {
       try {
@@ -54,7 +52,6 @@ export default function TicketSteps() {
     }
   }, [mounted])
 
-  // Separate effect for saving state
   useEffect(() => {
     if (mounted) {
       try {
@@ -89,7 +86,6 @@ export default function TicketSteps() {
 
   const handleBookAnother = () => {
     if (mounted) {
-      // Clear localStorage when booking another ticket
       localStorage.removeItem('currentStep')
       localStorage.removeItem('ticketData')
       localStorage.removeItem('ticketForm')
@@ -102,7 +98,6 @@ export default function TicketSteps() {
     })
   }
 
-  // Prevent hydration issues by not rendering until mounted
   if (!mounted) {
     return (
       <div className="max-w-2xl mx-auto">
