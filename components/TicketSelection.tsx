@@ -24,7 +24,6 @@ const initialTicketTypes: TicketType[] = [
   { type: 'VVIP ACCESS', price: 150, remaining: 20 },
 ]
 
-// Create a client-only ticket selection content component
 const TicketSelectionContent = dynamic(() => Promise.resolve(({ 
   ticketTypes, 
   selectedTicket, 
@@ -184,7 +183,6 @@ export default function TicketSelection({ onNext, selectedTicket: initialSelecte
     return Math.min(5, selectedType?.remaining || 0)
   }
 
-  // Prevent hydration issues by not rendering until mounted
   if (!mounted) {
     return (
       <div className="max-w-2xl mx-auto">
