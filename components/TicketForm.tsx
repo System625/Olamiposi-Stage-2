@@ -253,29 +253,40 @@ export default function TicketForm({ onBack, ticketData, onTicketDataChange, onS
 
   useEffect(() => {
     if (mounted) {
-      // Set form values after mounting to prevent hydration mismatch
       form.reset({
         fullName: ticketData.fullName || '',
         email: ticketData.email || '',
         profilePhoto: ticketData.profilePhoto || '',
         message: ticketData.message || '',
       })
-      
-      const savedForm = localStorage.getItem('ticketForm')
-      if (savedForm) {
-        const parsedForm = JSON.parse(savedForm)
-        form.reset(parsedForm)
-        if (parsedForm.profilePhoto) {
-          setProfilePhoto(parsedForm.profilePhoto)
-        }
-      }
     }
   }, [mounted, form, ticketData])
 
   useEffect(() => {
     if (mounted) {
+      const savedForm = localStorage.getItem('ticketForm')
+      if (savedForm) {
+        try {
+          const parsedForm = JSON.parse(savedForm)
+          form.reset(parsedForm)
+          if (parsedForm.profilePhoto) {
+            setProfilePhoto(parsedForm.profilePhoto)
+          }
+        } catch (error) {
+          console.error('Error parsing saved form:', error)
+        }
+      }
+    }
+  }, [mounted, form])
+
+  useEffect(() => {
+    if (mounted) {
       const subscription = form.watch((data) => {
-        localStorage.setItem('ticketForm', JSON.stringify(data))
+        try {
+          localStorage.setItem('ticketForm', JSON.stringify(data))
+        } catch (error) {
+          console.error('Error saving form:', error)
+        }
       })
       return () => subscription.unsubscribe()
     }

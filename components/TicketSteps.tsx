@@ -27,27 +27,42 @@ export default function TicketSteps() {
     setMounted(true)
   }, [])
 
-  // Load saved state on component mount
+  // Separate effect for loading saved state after mounting
   useEffect(() => {
     if (mounted) {
-      const savedStep = localStorage.getItem('currentStep')
-      const savedTicketData = localStorage.getItem('ticketData')
-      
-      if (savedStep) {
-        setCurrentStep(Number(savedStep))
-      }
-      
-      if (savedTicketData) {
-        setTicketData(JSON.parse(savedTicketData))
+      try {
+        const savedStep = localStorage.getItem('currentStep')
+        const savedTicketData = localStorage.getItem('ticketData')
+        
+        if (savedStep) {
+          const step = Number(savedStep)
+          if (!isNaN(step) && step >= 1 && step <= 3) {
+            setCurrentStep(step)
+          }
+        }
+        
+        if (savedTicketData) {
+          const parsedData = JSON.parse(savedTicketData)
+          setTicketData(prevData => ({
+            ...prevData,
+            ...parsedData
+          }))
+        }
+      } catch (error) {
+        console.error('Error loading saved state:', error)
       }
     }
   }, [mounted])
 
-  // Save state whenever it changes
+  // Separate effect for saving state
   useEffect(() => {
     if (mounted) {
-      localStorage.setItem('currentStep', currentStep.toString())
-      localStorage.setItem('ticketData', JSON.stringify(ticketData))
+      try {
+        localStorage.setItem('currentStep', currentStep.toString())
+        localStorage.setItem('ticketData', JSON.stringify(ticketData))
+      } catch (error) {
+        console.error('Error saving state:', error)
+      }
     }
   }, [currentStep, ticketData, mounted])
 

@@ -7,6 +7,7 @@ import { saveAs } from 'file-saver'
 import { toast } from 'sonner'
 import { Card } from '@/components/ui/card'
 import Image from 'next/image'
+import JsBarcode from 'jsbarcode'
 
 interface TicketData {
   type: string | null
@@ -23,8 +24,43 @@ interface TicketReadyProps {
 }
 
 function TicketContent({ ticketData }: { ticketData: TicketData }) {
+  const [isMounted, setIsMounted] = useState(false);
+  const [ticketId, setTicketId] = useState('');
+  const barcodeRef = useRef<SVGSVGElement>(null);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Separate effect for ticket ID generation after mounting
+  useEffect(() => {
+    if (isMounted) {
+      const namePrefix = ticketData.fullName?.replace(/\s+/g, '').slice(0, 6) || 'TICKET';
+      const timestamp = Date.now().toString().slice(-6);
+      setTicketId(`${namePrefix}-${timestamp}`);
+    }
+  }, [isMounted, ticketData.fullName]);
+
+  useEffect(() => {
+    if (barcodeRef.current && isMounted && ticketId) {
+      try {
+        JsBarcode(barcodeRef.current, ticketId, {
+          format: "CODE128",
+          width: 1,
+          height: 50,
+          displayValue: false,
+          background: "#0E464F",
+          lineColor: "#ffffff",
+          margin: 0,
+        });
+      } catch (error) {
+        console.error('Error generating barcode:', error);
+      }
+    }
+  }, [ticketId, isMounted]);
+
   return (
-    <div className="relative max-w-sm mx-auto px-4">
+    <div className="relative max-w-sm mx-auto px-3">
       <Image
         src="/bg.svg"
         alt="Ticket background"
@@ -32,7 +68,7 @@ function TicketContent({ ticketData }: { ticketData: TicketData }) {
         className="absolute inset-0 object-contain z-0"
         priority
       />
-      <div className="relative z-10 pt-4 px-6 max-w-xs mx-auto pb-10">
+      <div className="relative z-10 pt-4 px-8 max-w-xs mx-auto pb-10 md:pb-16">
         <div className="border border-[#24A0B5] rounded-2xl p-2">
           <div className="text-center space-y-2">
             <h3 className="text-2xl md:text-4xl text-white font-road-rage">Techember Fest &quot;25</h3>
@@ -48,7 +84,7 @@ function TicketContent({ ticketData }: { ticketData: TicketData }) {
             </div>
           </div>
 
-          <div className="flex justify-center mt-4">
+          <div className="flex justify-center mt-2">
             {ticketData.profilePhoto ? (
               <div className="relative w-24 h-24 md:w-36 md:h-36 border-4 border-[#24A0B5] rounded-lg overflow-hidden">
                 <Image
@@ -78,7 +114,7 @@ function TicketContent({ ticketData }: { ticketData: TicketData }) {
             </div>
             <div className="p-1.5 border-b border-r border-[#24A0B5]/30">
               <div className="text-gray-400 text-[8px] mb-0.5">Ticket Type</div>
-              <div className="text-white text-[10px]">{ticketData.type || 'VIP'}</div>
+              <div className="text-white text-[10px] line-clamp-1">{ticketData.type || 'VIP'}</div>
             </div>
             <div className="p-1.5 border-b border-l border-[#24A0B5]/30">
               <div className="text-gray-400 text-[8px] mb-0.5">Ticket for</div>
@@ -93,18 +129,11 @@ function TicketContent({ ticketData }: { ticketData: TicketData }) {
           </div>
         </div>
 
-        <div className="mt-8 text-center">
-          <div className="relative h-8 w-24 mx-auto mb-1">
-            <Image
-              src="/images/barcode.png"
-              alt="Ticket barcode"
-              fill
-              sizes="(max-width: 640px) 96px, 128px"
-              className="object-contain"
-              priority
-            />
+        <div className="mt-2 relative top-5 md:top-10 text-center">
+          <div className="relative h-14 w-32 mx-auto flex justify-center items-center">
+            {isMounted && <svg ref={barcodeRef}></svg>}
           </div>
-          <div className="text-[10px] text-gray-400 tracking-wider">234567 891026</div>
+          <div className="text-[10px] text-gray-400 tracking-wider">{ticketId}</div>
         </div>
       </div>
     </div>
@@ -131,17 +160,13 @@ export default function TicketReady({ ticketData, onBookAnother }: TicketReadyPr
       const dataUrl = await toPng(ticketRef.current, {
         quality: 1.0,
         pixelRatio: 3,
-        width: 320,
+        width: ticketRef.current.offsetWidth,
         height: ticketRef.current.offsetHeight,
         backgroundColor: '#0E464F',
         style: {
-          transform: 'scale(1)',
-          transformOrigin: 'center center',
-          margin: '0 auto',
-          padding: '0',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center'
+          transform: 'none',
+          margin: '0',
+          padding: '0'
         },
         filter: (node) => {          
           const exclusionClasses: string[] = []

@@ -65,4 +65,13 @@ export async function uploadToCloudinary(file: string): Promise<string> {
     console.error('Error uploading to Cloudinary:', error);
     throw error;
   }
+}
+
+export function generateBarcodeUrl(text: string): string {
+  if (!CLOUDINARY_CLOUD_NAME) {
+    throw new Error('Missing Cloudinary configuration');
+  }
+  
+  // Use Cloudinary's barcode generation transformation
+  return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/text/co_rgb:FFFFFF,w_200/b_rgb:0E464F/l_text:Arial_14:${encodeURIComponent(text)},co_white,g_north,y_5/l_text:Arial_14_bold:${encodeURIComponent(text)},co_white,g_south,y_5/c_scale,w_200/fl_text_no_trim/e_gen_barcode`;
 } 
