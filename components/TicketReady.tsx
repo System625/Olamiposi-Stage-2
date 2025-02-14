@@ -32,7 +32,6 @@ function TicketContent({ ticketData }: { ticketData: TicketData }) {
     setIsMounted(true);
   }, []);
 
-  // Separate effect for ticket ID generation after mounting
   useEffect(() => {
     if (isMounted) {
       const namePrefix = ticketData.fullName?.replace(/\s+/g, '').slice(0, 6) || 'TICKET';
