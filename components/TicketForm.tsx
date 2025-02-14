@@ -59,7 +59,6 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>
 
-// Create a client-only form content component
 const TicketFormContent = dynamic(() => Promise.resolve(({ 
   form,
   profilePhoto,
@@ -345,7 +344,6 @@ export default function TicketForm({ onBack, ticketData, onTicketDataChange, onS
     }
   }
 
-  // Prevent hydration issues by not rendering until mounted
   if (!mounted) {
     return (
       <div className="max-w-2xl mx-auto">
